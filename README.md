@@ -1,6 +1,6 @@
 # Alfuster
 ## Installation
-`-git clone url`
+`-git clone https://github.com/Alaristh/Alfuster.git`
 
 `-cd Alfuster`
 ## Use
