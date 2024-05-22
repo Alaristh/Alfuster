@@ -4,4 +4,4 @@
 
 `-cd Alfuster`
 ## Use
-`-python3 alfuster.py -u https://target -w /wordlist.txt`
+`-python alfuster.py -u https://target -w /wordlist.txt`
