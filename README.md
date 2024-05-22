@@ -1,6 +1,6 @@
 # Alfuster
 ## installation
-`git clone url`
+`-git clone url`
 
-`cd Alfuster`
+`-cd Alfuster`
 ### Sub-subtítulo
