@@ -10,7 +10,7 @@ init()
 def print_figlet():
     result = subprocess.run(['figlet', 'Alfuster'], capture_output=True, text=True)
     print(result.stdout)
-    print(Fore.CYAN + "Made by Alaris ---> https://github.com" + Style.RESET_ALL)
+    print(Fore.CYAN + "Made by Alaris ---> https://github.com/Alaristh" + Style.RESET_ALL)
     print('-' * 80)
 
 def brute_force(url, wordlist):
