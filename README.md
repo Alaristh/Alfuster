@@ -1,6 +1,7 @@
 # Alfuster
-## installation
+## Installation
 `-git clone url`
 
 `-cd Alfuster`
-### Sub-subtítulo
+## Use
+`-python3 alfuster.py -u https://target -w /wordlist.txt`
