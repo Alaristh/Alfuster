@@ -2,17 +2,20 @@ import requests
 import argparse
 import subprocess
 from tqdm import tqdm
-from colorama import init, Fore, Style
+from colorama import init, Fore, Style, Back
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Inicializar colorama
-init()
+init(autoreset=True)
 
 def print_figlet():
     result = subprocess.run(['figlet', 'Alfuster'], capture_output=True, text=True)
-    print(result.stdout)
-    print(Fore.CYAN + "Made by Alaris ---> https://github.com/Alaristh" + Style.RESET_ALL)
-    print('-' * 80)
+    print(Fore.RED + Style.BRIGHT + result.stdout + Style.RESET_ALL)
+    print(Fore.WHITE + Back.BLACK + Style.BRIGHT + "Made by Alaris ---> https://github.com/Alaristh" + Style.RESET_ALL)
+    print(Fore.RED + Back.BLACK + Style.BRIGHT + '-' * 80 + Style.RESET_ALL)
+    print(Fore.RED + Back.BLACK + Style.BRIGHT + "DISCLAIMER: I am not responsible for any misuse of this tool. Use it at your own risk." + Style.RESET_ALL)
+    print(Fore.WHITE + Back.BLACK + Style.BRIGHT + "© Alaris" + Style.RESET_ALL)
+    print(Fore.RED + Back.BLACK + Style.BRIGHT + '-' * 80 + Style.RESET_ALL)
 
 def check_directory(url, directory):
     full_url = f"{url}/{directory}"
@@ -29,10 +32,10 @@ def brute_force(url, wordlist, max_workers=10):
         with open(wordlist, 'r') as file:
             directories = file.read().splitlines()
     except FileNotFoundError:
-        print(f"Error: El archivo {wordlist} no existe.")
+        print(f"{Fore.RED}Error: The file {wordlist} does not exist.{Style.RESET_ALL}")
         return
     except PermissionError:
-        print(f"Error: No tienes permiso para leer el archivo {wordlist}.")
+        print(f"{Fore.RED}Error: You do not have permission to read the file {wordlist}.{Style.RESET_ALL}")
         return
     
     found_directories = []
@@ -41,24 +44,26 @@ def brute_force(url, wordlist, max_workers=10):
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             future_to_directory = {executor.submit(check_directory, url, directory): directory for directory in directories}
             
-            # Inicializar tqdm para la barra de progreso
-            with tqdm(total=len(directories), desc="Brute Forcing", unit="dir") as pbar:
+            # Inicializar tqdm para la barra de progreso con colores personalizados
+            with tqdm(total=len(directories), desc=Fore.WHITE + "Brute Forcing" + Style.RESET_ALL, unit="dir", bar_format="{l_bar}%s{bar}%s{r_bar}" % (Fore.RED, Style.RESET_ALL)) as pbar:
                 for future in as_completed(future_to_directory):
                     directory = future_to_directory[future]
-                    pbar.update(1)
                     try:
                         result = future.result()
                         if result:
                             found_directories.append(result)
+                            tqdm.write(Fore.WHITE + Style.BRIGHT + f"[+] Found: {result}" + Style.RESET_ALL)  # Mostrar directorio encontrado sin interferir con tqdm
                     except Exception as e:
-                        print(f"Error al procesar {directory}: {e}")
+                        tqdm.write(Fore.RED + f"Error processing {directory}: {e}" + Style.RESET_ALL)
+                    pbar.update(1)
     except KeyboardInterrupt:
-        print("\nProceso interrumpido por el usuario. Cerrando...")
+        print(Fore.RED + "\nProcess interrupted by the user. Shutting down..." + Style.RESET_ALL)
         return
 
     # Imprimir los directorios encontrados al final
+    print(Fore.RED + Back.BLACK + Style.BRIGHT + "\nSummary of found directories:" + Style.RESET_ALL)
     for found in found_directories:
-        print(f"[+] Found: {found}")
+        print(Fore.WHITE + Style.BRIGHT + f"[+] Found: {found}" + Style.RESET_ALL)
 
 def main():
     # Imprimir créditos al inicio
@@ -76,7 +81,7 @@ def main():
     
     # Comprobar si la URL es válida
     if not args.url.startswith(('http://', 'https://')):
-        print("Error: La URL debe comenzar con 'http://' o 'https://'.")
+        print(Fore.RED + "Error: The URL must start with 'http://' or 'https://'." + Style.RESET_ALL)
         return
     
     brute_force(args.url, args.wordlist)
